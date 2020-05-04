@@ -1,0 +1,38 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# media
+/public/games
+/public/images
+/public/rob-taylor-resume-js.docx
+/public/favicon.ico
+/public/logo192.png
+/public/logo512.png
+/src/css/home_header_code.png
+/src/css/home_project_code.png
+/src/css/labrynthium_project.png
+/src/css/petri_dish_project.png
+/src/css/racing_core_project.png
+/src/css/racing_core_project_2.png
+/src/css/yaotl_coatl_racing_project.png
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

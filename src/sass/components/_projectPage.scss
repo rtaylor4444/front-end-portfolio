@@ -1,0 +1,18 @@
+.project_page {
+  margin-left: 4rem;
+  animation: fadeIn 1.5s ease-out 1s;
+  animation-fill-mode: backwards;
+
+  &__image {
+    width: 90%;
+  }
+
+  &__paragraph {
+    margin-bottom: 0.5rem;
+    margin-right: 5rem;
+
+    &--green {
+      color: $color-green;
+    }
+  }
+}

@@ -1,0 +1,100 @@
+.section_header {
+  color: $color-black;
+  position: relative;
+  height: 95vh;
+  background-image: linear-gradient(
+      to right bottom,
+      rgba($color-primary-light, 0.8),
+      rgba($color-primary-dark, 0.8)
+    ),
+    url("home_header_code.png");
+  background-size: cover;
+  clip-path: polygon(0 0, 100% 0, 100% 75vh, 0 100%);
+  @include respond(tab-port) {
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+  }
+
+  &__text_box {
+    position: absolute;
+    width: 75%;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  &__text_name {
+    display: block;
+    font-size: 6rem;
+    font-weight: 400;
+    letter-spacing: 3.5rem;
+    animation: moveInRight 1s ease-out;
+  }
+
+  &__text_slogan {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 1.85rem;
+    animation: moveInLeft 1s ease-out;
+  }
+}
+
+.section_experience {
+  padding: 0 3rem;
+  margin-bottom: 5vh;
+
+  @include respond(tab-port) {
+    padding: 5rem 0;
+    margin-bottom: 0;
+  }
+
+  &__paragraph {
+    font-size: $default-font-size;
+    &:not(:last-child) {
+      margin-bottom: 8rem;
+      @include respond(tab-port) {
+        margin-bottom: 5rem;
+      }
+    }
+  }
+
+  &__resume {
+    width: 100%;
+
+    &:hover {
+      outline: 4px solid $color-primary-dark;
+    }
+  }
+}
+
+.section_projects {
+  color: $color-black;
+  padding: 20rem 0;
+  margin-top: -5rem;
+  background-image: linear-gradient(
+      to right bottom,
+      rgba($color-primary-light, 0.8),
+      rgba($color-primary-dark, 0.8)
+    ),
+    url("home_project_code.png");
+  background-size: cover;
+  text-align: center;
+  clip-path: polygon(0 20%, 100% 0, 100% 80%, 0 100%);
+
+  @include respond(tab-port) {
+    clip-path: polygon(0 10%, 100% 0, 100% 90%, 0 100%);
+  }
+
+  &__content {
+    margin-top: 0;
+
+    @include respond(tab-port) {
+      margin-top: 2rem;
+    }
+  }
+}
+
+.section_learning {
+  margin: 5rem 0;
+}

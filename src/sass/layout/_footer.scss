@@ -1,0 +1,24 @@
+.footer {
+  background-color: $color-primary;
+  color: $color-black;
+  padding: 3rem 0;
+  text-align: center;
+
+  &__icons {
+    border-top: 1px solid $color-grey-dark-3;
+    padding-top: 1rem;
+    display: inline-block;
+
+    &--black {
+      color: $color-black;
+      margin: 1rem;
+    }
+  }
+
+  &__copyright {
+    border-top: 1px solid $color-grey-dark-3;
+    display: inline-block;
+    padding: 0 1rem;
+    padding-top: 1rem;
+  }
+}

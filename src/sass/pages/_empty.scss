@@ -1,0 +1,8 @@
+.empty {
+  height: 80vh;
+  position: relative;
+
+  &__text {
+    @include absoluteCenter;
+  }
+}

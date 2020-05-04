@@ -1,0 +1,93 @@
+.project_item {
+  position: relative;
+  margin-top: 8rem;
+
+  @include respond(tab-port) {
+    margin-top: 4rem;
+  }
+
+  &__content {
+    width: 60%;
+    margin: 0 auto;
+    z-index: 1;
+
+    background-color: $color-grey-dark-1;
+    color: $color-primary;
+    text-align: center;
+    border-radius: 2px;
+    border: 3px solid transparent;
+    //animation
+    animation-name: spinAndMoveInLeft;
+    animation-duration: 0.6s;
+    animation-fill-mode: backwards;
+    animation-timing-function: ease-in;
+
+    &--0,
+    &--1 {
+      animation-delay: 0;
+    }
+
+    &--2,
+    &--3 {
+      animation-delay: 0.5s;
+    }
+
+    &:hover {
+      outline-offset: 1rem;
+      outline: 1rem solid $color-primary;
+      transform: translateY(-0.5rem) scale(1.1);
+      z-index: 2;
+    }
+
+    &__header {
+      font-size: 2.4rem;
+      color: $color-black;
+      height: 15rem;
+      background-size: cover;
+
+      &--0 {
+        background-image: linear-gradient(
+            to right bottom,
+            rgba($color-primary-light, 0.7),
+            rgba($color-primary-dark, 0.7)
+          ),
+          url("petri_dish_project.png");
+      }
+
+      &--1 {
+        background-image: linear-gradient(
+            to right bottom,
+            rgba($color-primary-light, 0.5),
+            rgba($color-primary-dark, 0.5)
+          ),
+          url("yaotl_coatl_racing_project.png");
+      }
+
+      &--2 {
+        background-image: linear-gradient(
+            to right bottom,
+            rgba($color-primary-light, 0.7),
+            rgba($color-primary-dark, 0.7)
+          ),
+          url("labrynthium_project.png");
+      }
+
+      &--3 {
+        background-image: linear-gradient(
+            to right bottom,
+            rgba($color-primary-light, 0.5),
+            rgba($color-primary-dark, 0.5)
+          ),
+          url("racing_core_project_2.png");
+      }
+    }
+
+    &__text {
+      font-size: $default-font-size;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid $color-primary-light;
+      width: 75%;
+      margin: 0 auto;
+    }
+  }
+}
