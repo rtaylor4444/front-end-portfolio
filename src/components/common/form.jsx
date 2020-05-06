@@ -107,6 +107,14 @@ class Form extends Component {
       </div>
     );
   }
+
+  renderFormError() {
+    return (
+      <p className="form__label--invalid u-center-text">
+        {this.state.errors.general}
+      </p>
+    );
+  }
 }
 
 export default Form;

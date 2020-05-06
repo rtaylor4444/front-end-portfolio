@@ -1,14 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import auth from "../services/authService";
 
 function renderUserInfo(user) {
-  //BUG - users name to be displayed
   if (user)
     return (
       <React.Fragment>
-        <NavLink className="navbar__item navbar__item--right" to="/logout">
+        <NavLink
+          onClick={auth.logout}
+          className="navbar__item navbar__item--right"
+          to="/"
+        >
           Logout
+        </NavLink>
+        <NavLink className="navbar__item navbar__item--right" to="/">
+          {user.name}
         </NavLink>
       </React.Fragment>
     );
@@ -25,7 +31,9 @@ function renderUserInfo(user) {
   );
 }
 
-const NavBar = (props) => {
+const NavBar = () => {
+  const [user, setUser] = useState(auth.getCurrentUser());
+  auth.setNavBarUpdate(setUser);
   return (
     <nav className="navbar">
       <NavLink className="navbar__item" to="/">
@@ -40,41 +48,8 @@ const NavBar = (props) => {
       <NavLink className="navbar__item" to="/contact">
         Contact Me
       </NavLink>
-      {renderUserInfo(auth.getCurrentUser())}
+      {renderUserInfo(user)}
     </nav>
   );
 };
 export default NavBar;
-
-/*
-  <nav className="navbar navbar-expand-md navbar-light bg-light">
-      <Link className="navbar-brand" to="/">
-        Rob Taylor
-      </Link>
-      <button
-        className="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarNavAltMarkup"
-        aria-controls="navbarNavAltMarkup"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span className="navbar-toggler-icon"></span>
-      </button>
-      <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div className="navbar-nav">
-          <NavLink className="nav-item nav-link" to="/projects">
-            Projects
-          </NavLink>
-          <NavLink className="nav-item nav-link" to="/blog">
-            Blog
-          </NavLink>
-          <NavLink className="nav-item nav-link" to="/contact">
-            Contact Me
-          </NavLink>
-          {renderUserInfo(auth.getCurrentUser())}
-        </div>
-      </div>
-    </nav>
-*/

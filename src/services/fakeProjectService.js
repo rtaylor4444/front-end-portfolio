@@ -231,7 +231,7 @@ export function deleteProject(id) {
 export function renderProjectItem(id) {
   const project = getProject(id);
   return (
-    <div className="project_item">
+    <div key={id} className="project_item">
       <div
         className={
           "project_item__content project_item__content--" + project._id

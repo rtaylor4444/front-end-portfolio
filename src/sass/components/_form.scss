@@ -86,4 +86,9 @@
 
     @include invalidInput;
   }
+
+  &__info {
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
 }

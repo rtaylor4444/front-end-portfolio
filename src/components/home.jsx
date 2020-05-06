@@ -68,9 +68,11 @@ const Home = (props) => {
             Show don't Tell
           </h2>
           <p>Check out my projects!</p>
-          <div class="row">
+          <div className="row">
             {recentProjects.map((p) => (
-              <div class="col-1-of-3">{renderProjectItem(p)}</div>
+              <div key={p} className="col-1-of-3">
+                {renderProjectItem(p)}
+              </div>
             ))}
           </div>
         </div>
@@ -100,8 +102,8 @@ const Home = (props) => {
                   complex CSS animations, advanced responsive design techniques,
                   flexbox layouts, Sass, CSS architecture, fundamental CSS
                   concepts, and so much more.
-                  <p>Created by: Jonas Schmedtmann</p>
                 </p>
+                <p>Created by: Jonas Schmedtmann</p>
               </div>
             </a>
           </div>
