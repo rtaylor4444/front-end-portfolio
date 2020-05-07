@@ -8,3 +8,10 @@ export function register(user) {
     name: user.name,
   });
 }
+
+export function postComment(user, message) {
+  return http.post(config.commentEndPoint, {
+    name: user.name,
+    message: message,
+  });
+}

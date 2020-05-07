@@ -1,18 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import auth from "../../services/authService";
-
-function renderUnavailable() {
-  return <h1>You must be logged in to make a comment</h1>;
-}
-
-function renderContent() {
-  return null;
-}
+import CommentForm from "./commentForm";
 
 const Comments = () => {
+  //BUG - Comments should be stored on the server
+  const [comments, setComments] = useState([]);
   const user = auth.getCurrentUser();
-  if (!user) return renderUnavailable();
-  return renderContent();
+  return (
+    <React.Fragment>
+      <CommentForm comments={comments} setComments={setComments} user={user} />
+    </React.Fragment>
+  );
 };
 
 export default Comments;

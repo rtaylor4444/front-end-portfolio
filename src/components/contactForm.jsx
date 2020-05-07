@@ -19,16 +19,12 @@ class ContactForm extends Form {
     message: Joi.string().required().label("Message").min(20).max(200),
   };
 
-  //BUG - user info is not there; I need a backend
-  componentDidMount() {
+  constructor(props) {
+    super(props);
     const user = auth.getCurrentUser();
     if (!user) return;
-    this.setState({ email: user.email });
-  }
-
-  getPreviousLocation() {
-    const { state } = this.props.location;
-    return state ? state.from.pathname : "/";
+    this.state.data.email = user.email;
+    console.log(this.state, user.email);
   }
 
   doSubmit = async (e) => {
@@ -67,7 +63,9 @@ class ContactForm extends Form {
       let tempErrors = { ...errors };
       tempErrors["contact"] = submitError.text;
       this.setState({ errors: tempErrors });
+      return;
     }
+
     //Clear the form
     this.setState({
       data: { name: "", email: "", subject: "", message: "" },
@@ -96,7 +94,7 @@ class ContactForm extends Form {
     return (
       <React.Fragment>
         <h1 className="u-margin-top-big u-center-text">Message Sent!</h1>
-        <Link to={this.getPreviousLocation()}>
+        <Link onClick={() => this.props.history.goBack()} to="/">
           <h2 className="u-margin-bottom-big u-center-text">
             (Return to Previous Page)
           </h2>

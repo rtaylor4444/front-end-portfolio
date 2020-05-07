@@ -1,0 +1,24 @@
+.commentList {
+  width: 100%;
+  color: $color-green;
+  margin-bottom: 3rem;
+
+  &__comment {
+    border-bottom: 2px solid $color-green;
+    padding: 0.5rem 0;
+    word-wrap: break-word;
+
+    &--admin {
+      color: $color-primary;
+      border-bottom: 2px solid $color-primary;
+    }
+    &__heading {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    &__message {
+      font-size: $default-font-size;
+    }
+  }
+}
