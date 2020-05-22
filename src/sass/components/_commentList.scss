@@ -1,11 +1,13 @@
 .commentList {
-  width: 100%;
   color: $color-green;
   margin-bottom: 3rem;
+  position: relative;
 
   &__comment {
+    width: 90%;
     border-bottom: 2px solid $color-green;
     padding: 0.5rem 0;
+    margin: 0 auto;
     word-wrap: break-word;
 
     &--admin {
@@ -19,6 +21,17 @@
 
     &__message {
       font-size: $default-font-size;
+    }
+
+    &__options {
+      display: inline-block;
+      font-size: $default-font-size;
+      text-decoration: underline;
+      margin-top: 1rem;
+      margin-right: 25%;
+      &:hover {
+        cursor: pointer;
+      }
     }
   }
 }

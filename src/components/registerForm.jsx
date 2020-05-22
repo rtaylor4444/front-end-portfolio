@@ -12,7 +12,7 @@ class RegisterForm extends Form {
   schema = {
     email: Joi.string().required().label("Email").email(),
     password: Joi.string().required().label("Password").min(5),
-    name: Joi.string().required().label("Name").min(3),
+    name: Joi.string().required().label("Name").min(3).max(50),
   };
 
   doSubmit = async () => {

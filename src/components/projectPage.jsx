@@ -13,7 +13,7 @@ const ProjectPage = (props) => {
       <h1>{"{"}</h1>
       <div className="project_page">{project.content && project.content()}</div>
       <h1>{"}"}</h1>
-      <Comments />
+      <Comments itemName={project.title} />
     </React.Fragment>
   );
 };

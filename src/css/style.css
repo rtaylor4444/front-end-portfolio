@@ -204,12 +204,14 @@ body {
   border: none; }
 
 .commentList {
-  width: 100%;
   color: #62d66c;
-  margin-bottom: 3rem; }
+  margin-bottom: 3rem;
+  position: relative; }
   .commentList__comment {
+    width: 90%;
     border-bottom: 2px solid #62d66c;
     padding: 0.5rem 0;
+    margin: 0 auto;
     word-wrap: break-word; }
     .commentList__comment--admin {
       color: #4fb4c2;
@@ -219,6 +221,14 @@ body {
       margin-bottom: 0.5rem; }
     .commentList__comment__message {
       font-size: 1.6rem; }
+    .commentList__comment__options {
+      display: inline-block;
+      font-size: 1.6rem;
+      text-decoration: underline;
+      margin-top: 1rem;
+      margin-right: 25%; }
+      .commentList__comment__options:hover {
+        cursor: pointer; }
 
 .form {
   font-size: 1.6rem;

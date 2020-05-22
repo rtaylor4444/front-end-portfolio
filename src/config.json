@@ -1,5 +1,6 @@
 {
   "userEndPoint": "http://localhost:5000/api/users",
   "loginEndPoint": "http://localhost:5000/api/login",
+  "commentEndPoint": "http://localhost:5000/api/comments/",
   "tokenKey": "token"
 }
