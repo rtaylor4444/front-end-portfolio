@@ -1,11 +1,28 @@
 import http from "./httpService";
 import config from "../config.json";
 
+let serverUserIndex;
+
 export async function register(user) {
-  return await http.post(config.userEndPoint, {
+  const response = await http.post(config.userEndPoint, {
     email: user.email,
     password: user.password,
     name: user.name,
+  });
+  serverUserIndex = response.data.index;
+  return response;
+}
+
+export async function confirm(code) {
+  return await http.post(config.userEndPoint + "/confirm", {
+    index: serverUserIndex,
+    code,
+  });
+}
+
+export async function resendCode() {
+  return await http.post(config.userEndPoint + "/resend", {
+    index: serverUserIndex,
   });
 }
 

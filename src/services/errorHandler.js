@@ -5,8 +5,7 @@ export function handleLoginError(ex, errors) {
   errors.general = generalError;
   //Handle if user is already registered or incorrect credentials for login
   if (ex.response && ex.response.status === 400) {
-    errors.email = ex.response.data;
-    errors.general = "";
+    errors.general = ex.response.data;
   }
   //Handle server error
   else if (ex.response && ex.response.status === 500) {

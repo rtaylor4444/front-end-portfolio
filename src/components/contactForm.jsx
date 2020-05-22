@@ -24,7 +24,6 @@ class ContactForm extends Form {
     const user = auth.getCurrentUser();
     if (!user) return;
     this.state.data.email = user.email;
-    console.log(this.state, user.email);
   }
 
   doSubmit = async (e) => {

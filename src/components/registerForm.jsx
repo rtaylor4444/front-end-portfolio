@@ -7,7 +7,10 @@ import auth from "../services/authService";
 import errorHandler from "../services/errorHandler";
 
 class RegisterForm extends Form {
-  state = { data: { email: "", password: "", name: "" }, errors: {} };
+  state = {
+    data: { email: "", password: "", name: "" },
+    errors: {},
+  };
 
   schema = {
     email: Joi.string().required().label("Email").email(),
@@ -18,11 +21,10 @@ class RegisterForm extends Form {
   doSubmit = async () => {
     //Call the server
     try {
-      const response = await userService.register(this.state.data);
-      auth.loginWithJwt(response.headers["x-auth-token"], this.props.history);
+      await userService.register(this.state.data);
+      this.props.history.push("/confirm");
     } catch (exception) {
       const errors = { ...this.state.errors };
-      errors.general = "Something unexpected happened try again later.";
       errorHandler.handleLoginError(exception, errors);
       this.setState({ errors });
     }

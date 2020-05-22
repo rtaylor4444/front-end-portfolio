@@ -6,6 +6,7 @@ import Home from "./components/home";
 import NotFound from "./components/notFound";
 import LoginForm from "./components/loginForm";
 import RegisterForm from "./components/registerForm";
+import ConfirmForm from "./components/confirmForm";
 import ContactForm from "./components/contactForm";
 import Blog from "./components/blog";
 import Projects from "./components/projects";
@@ -22,6 +23,7 @@ function App() {
         <Route path="/blog" component={Blog} />
         <Route path="/contact" component={ContactForm} />
         <Route path="/register" component={RegisterForm} />
+        <Route path="/confirm" component={ConfirmForm} />
         <Route path="/login" component={LoginForm} />
         <Route path="/not-found" component={NotFound} />
         <Route exact path="/" component={Home} />
