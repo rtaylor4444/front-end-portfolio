@@ -5,6 +5,14 @@ import jwtDecode from "jwt-decode";
 http.setJwt(getJwt());
 let navbarUpdateUser;
 
+//BUG - function ot be moved to its own module
+export function goBackInSite(history) {
+  //If user was previously on this site go to the prev page
+  //otherwise go home
+  if (history.location.key) history.goBack();
+  else history.push("/");
+}
+
 export async function login(email, password, history) {
   const { data: jwt } = await http.post(config.loginEndPoint, {
     email,
@@ -16,7 +24,7 @@ export async function login(email, password, history) {
 export function loginWithJwt(jwt, history) {
   localStorage.setItem(config.tokenKey, jwt);
   navbarUpdateUser(getCurrentUser());
-  history.goBack();
+  goBackInSite(history);
 }
 
 export function logout() {
@@ -48,4 +56,5 @@ export default {
   getCurrentUser,
   getJwt,
   setNavBarUpdate,
+  goBackInSite,
 };

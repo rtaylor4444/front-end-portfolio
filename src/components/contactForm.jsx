@@ -24,6 +24,7 @@ class ContactForm extends Form {
     const user = auth.getCurrentUser();
     if (!user) return;
     this.state.data.email = user.email;
+    this.state.data.name = user.name;
   }
 
   doSubmit = async (e) => {
@@ -90,10 +91,11 @@ class ContactForm extends Form {
 
   renderSuccess(error, success) {
     if (error || !success) return null;
+    const { history } = this.props;
     return (
       <React.Fragment>
         <h1 className="u-margin-top-big u-center-text">Message Sent!</h1>
-        <Link onClick={() => this.props.history.goBack()} to="/">
+        <Link onClick={() => auth.goBackInSite(history)} to="/">
           <h2 className="u-margin-bottom-big u-center-text">
             (Return to Previous Page)
           </h2>
@@ -114,7 +116,7 @@ class ContactForm extends Form {
     return (
       <form className="form" onSubmit={this.handleSubmit}>
         <div className="form__group">
-          {this.renderInput("Name", "name")}
+          {!user && this.renderInput("Name", "name")}
           {!user && this.renderInput("Email", "email", "email")}
           {this.renderInput("Subject", "subject")}
           {this.renderTextArea("Message", "message")}

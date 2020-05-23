@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import YouTube from "react-youtube";
-import Unity, { UnityContent } from "react-unity-webgl";
+
 import DropdownText from "./../components/common/dropdowntext";
 
 const projects = [
@@ -184,14 +184,16 @@ const projects = [
           <p>
             P.S: Please be patient and give the demo some time to load, thanks!
           </p>
-          <Unity
-            unityContent={
-              new UnityContent(
-                "/games/Racing Core/WebGL.json",
-                "/games/Racing Core/UnityLoader.js"
-              )
-            }
+          <img
+            src="/images/Racing Core.png"
+            alt="not found"
+            className="project_page__image"
           />
+          <div className="u-center-text">
+            <Link to={"/racing_core_game"}>
+              <button className="btn">Play!</button>
+            </Link>
+          </div>
           <DropdownText
             title="Personal Notes"
             active={false}

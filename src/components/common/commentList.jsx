@@ -60,7 +60,7 @@ class CommentList extends Component {
           c.author
         }${getEditedText(c.isEdited)}`}</p>
         <p className="commentList__comment__message">{`/*${c.message}*/`}</p>
-        {user.name === c.author && (
+        {user && user.name === c.author && (
           <div
             className="commentList__comment__options"
             onClick={() => {
@@ -96,7 +96,7 @@ class CommentList extends Component {
             Reply
           </div>
         )}
-        {user.isAdmin && (
+        {user && user.isAdmin && (
           <div
             className="commentList__comment__options"
             onClick={() => {
