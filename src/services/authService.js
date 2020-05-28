@@ -4,6 +4,8 @@ import jwtDecode from "jwt-decode";
 
 http.setJwt(getJwt());
 let navbarUpdateUser;
+let passwordRecIndex;
+let enteredEmail;
 
 //BUG - function ot be moved to its own module
 export function goBackInSite(history) {
@@ -25,6 +27,21 @@ export function loginWithJwt(jwt, history) {
   localStorage.setItem(config.tokenKey, jwt);
   navbarUpdateUser(getCurrentUser());
   goBackInSite(history);
+}
+
+export async function recoverPasswordReq(email) {
+  enteredEmail = email;
+  const { data } = await http.post(config.userEndPoint + "/recover", { email });
+  passwordRecIndex = data.index;
+}
+
+export async function resetPassword(code, password) {
+  await http.post(config.userEndPoint + "/reset", {
+    email: enteredEmail,
+    index: passwordRecIndex,
+    code,
+    password,
+  });
 }
 
 export function logout() {
@@ -53,6 +70,8 @@ export default {
   login,
   loginWithJwt,
   logout,
+  recoverPasswordReq,
+  resetPassword,
   getCurrentUser,
   getJwt,
   setNavBarUpdate,

@@ -8,6 +8,8 @@ import LoginForm from "./components/loginForm";
 import RegisterForm from "./components/registerForm";
 import ConfirmForm from "./components/confirmForm";
 import ContactForm from "./components/contactForm";
+import PasswordResetForm from "./components/passResetForm";
+import PasswordRecoverForm from "./components/passRecoverForm";
 import Blog from "./components/blog";
 import Projects from "./components/projects";
 import ProjectPage from "./components/projectPage";
@@ -26,6 +28,8 @@ function App() {
         <Route path="/contact" component={ContactForm} />
         <Route path="/register" component={RegisterForm} />
         <Route path="/confirm" component={ConfirmForm} />
+        <Route path="/recover" component={PasswordRecoverForm} />
+        <Route path="/reset" component={PasswordResetForm} />
         <Route path="/login" component={LoginForm} />
         <Route path="/not-found" component={NotFound} />
         <Route exact path="/" component={Home} />

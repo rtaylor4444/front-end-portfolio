@@ -16,7 +16,6 @@ export function handleLoginError(ex, errors) {
 
 export function handleCommentError(ex, errors) {
   errors.general = generalError;
-  console.log(ex);
   //Handle server error
   if (ex.response && ex.response.status === 500) {
     errors.general = UnavailableService;
