@@ -1,10 +1,14 @@
 import http from "./httpService";
 import config from "../config.json";
 
+const userEndPoint =
+  process.env.REACT_APP_PORTFOLIO_ENDPOINT + config.userEndPoint;
+const commentEndPoint =
+  process.env.REACT_APP_PORTFOLIO_ENDPOINT + config.commentEndPoint;
 let serverUserIndex;
 
 export async function register(user) {
-  const response = await http.post(config.userEndPoint, {
+  const response = await http.post(userEndPoint, {
     email: user.email,
     password: user.password,
     name: user.name,
@@ -14,20 +18,20 @@ export async function register(user) {
 }
 
 export async function confirm(code) {
-  return await http.post(config.userEndPoint + "/confirm", {
+  return await http.post(userEndPoint + "/confirm", {
     index: serverUserIndex,
     code,
   });
 }
 
 export async function resendCode() {
-  return await http.post(config.userEndPoint + "/resend", {
+  return await http.post(userEndPoint + "/resend", {
     index: serverUserIndex,
   });
 }
 
 export async function postComment(itemName, comment) {
-  return await http.post(config.commentEndPoint + itemName, {
+  return await http.post(commentEndPoint + itemName, {
     author: comment.author,
     isAdmin: comment.isAdmin,
     message: comment.message,
@@ -35,7 +39,7 @@ export async function postComment(itemName, comment) {
 }
 
 export async function postReply(itemName, commentId, reply) {
-  return await http.post(config.commentEndPoint + itemName + "/" + commentId, {
+  return await http.post(commentEndPoint + itemName + "/" + commentId, {
     author: reply.author,
     isAdmin: reply.isAdmin,
     message: reply.message,
@@ -43,7 +47,7 @@ export async function postReply(itemName, commentId, reply) {
 }
 
 export async function editComment(itemName, comment) {
-  return await http.put(config.commentEndPoint + itemName, {
+  return await http.put(commentEndPoint + itemName, {
     _id: comment._id,
     author: comment.author,
     isAdmin: comment.isAdmin,
@@ -52,7 +56,7 @@ export async function editComment(itemName, comment) {
 }
 
 export async function editReply(itemName, commentId, reply) {
-  return await http.put(config.commentEndPoint + itemName + "/" + commentId, {
+  return await http.put(commentEndPoint + itemName + "/" + commentId, {
     _id: reply._id,
     author: reply.author,
     isAdmin: reply.isAdmin,
@@ -61,20 +65,17 @@ export async function editReply(itemName, commentId, reply) {
 }
 
 export async function deleteComment(itemName, comment) {
-  return await http.delete(config.commentEndPoint + itemName, {
+  return await http.delete(commentEndPoint + itemName, {
     data: comment,
   });
 }
 
 export async function deleteReply(itemName, commentId, reply) {
-  return await http.delete(
-    config.commentEndPoint + itemName + "/" + commentId,
-    {
-      data: reply,
-    }
-  );
+  return await http.delete(commentEndPoint + itemName + "/" + commentId, {
+    data: reply,
+  });
 }
 
 export async function getComments(itemName) {
-  return await http.get(config.commentEndPoint + itemName);
+  return await http.get(commentEndPoint + itemName);
 }

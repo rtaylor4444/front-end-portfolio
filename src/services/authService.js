@@ -3,6 +3,8 @@ import config from "../config.json";
 import jwtDecode from "jwt-decode";
 
 http.setJwt(getJwt());
+const userEndPoint =
+  process.env.REACT_APP_PORTFOLIO_ENDPOINT + config.userEndPoint;
 let navbarUpdateUser;
 let passwordRecIndex;
 let enteredEmail;
@@ -16,10 +18,13 @@ export function goBackInSite(history) {
 }
 
 export async function login(email, password, history) {
-  const { data: jwt } = await http.post(config.loginEndPoint, {
-    email,
-    password,
-  });
+  const { data: jwt } = await http.post(
+    process.env.REACT_APP_PORTFOLIO_ENDPOINT + config.loginEndPoint,
+    {
+      email,
+      password,
+    }
+  );
   loginWithJwt(jwt, history);
 }
 
@@ -31,12 +36,12 @@ export function loginWithJwt(jwt, history) {
 
 export async function recoverPasswordReq(email) {
   enteredEmail = email;
-  const { data } = await http.post(config.userEndPoint + "/recover", { email });
+  const { data } = await http.post(userEndPoint + "/recover", { email });
   passwordRecIndex = data.index;
 }
 
 export async function resetPassword(code, password) {
-  await http.post(config.userEndPoint + "/reset", {
+  await http.post(userEndPoint + "/reset", {
     email: enteredEmail,
     index: passwordRecIndex,
     code,
