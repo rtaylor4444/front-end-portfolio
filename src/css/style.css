@@ -552,7 +552,8 @@ body {
   clip-path: polygon(0 20%, 100% 0, 100% 80%, 0 100%); }
   @media only screen and (max-width: 56.25em) {
     .section_projects {
-      clip-path: polygon(0 10%, 100% 0, 100% 90%, 0 100%); } }
+      clip-path: polygon(0 10%, 100% 0, 100% 90%, 0 100%);
+      background-size: auto; } }
   .section_projects__content {
     margin-top: 0; }
     @media only screen and (max-width: 56.25em) {

@@ -1,9 +1,8 @@
 import http from "./httpService";
-import config from "../config.json";
+import config from "../config";
 import jwtDecode from "jwt-decode";
 
-const userEndPoint =
-  process.env.REACT_APP_PORTFOLIO_ENDPOINT + config.userEndPoint;
+const userEndPoint = config.userEndPoint;
 let navbarUpdateUser;
 let passwordRecIndex;
 let enteredEmail;
@@ -29,7 +28,7 @@ export async function login(email, password, history) {
 
 export function loginWithJwt(jwt, history) {
   localStorage.setItem(config.tokenKey, jwt);
-  http.setJwt(getJwt());
+  http.setJwt(jwt);
   navbarUpdateUser(getCurrentUser());
   goBackInSite(history);
 }

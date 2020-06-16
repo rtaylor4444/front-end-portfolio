@@ -23,8 +23,8 @@ const Home = (props) => {
           creating and building. Ever since his humble beginnings making games
           using RPG Maker VX he gained an interest in programming. This interest
           sparked Rob to pursue a Bachelors Degree in Game Development at Full
-          Sail University. In order to make it through the accelerated program
-          he gained the ability to pick up new skills and concepts quickly. This
+          Sail University. Thanks to his ability to pick up new skills and
+          concepts quickly he make it through the accelerated program. This
           ability allowed him to learn Web Development and eventually Full-Stack
           Development to meet his professional needs.
         </p>
@@ -56,7 +56,7 @@ const Home = (props) => {
           </div>
         </div>
         <div className="u-center-text">
-          <a href="/rob-taylor-resume-js.docx" download className="btn">
+          <a href="/rob-taylor-resume-web.docx" download className="btn">
             Download Resume
           </a>
         </div>

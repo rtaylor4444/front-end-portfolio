@@ -1,10 +1,8 @@
 import http from "./httpService";
-import config from "../config.json";
+import config from "../config";
 
-const userEndPoint =
-  process.env.REACT_APP_PORTFOLIO_ENDPOINT + config.userEndPoint;
-const commentEndPoint =
-  process.env.REACT_APP_PORTFOLIO_ENDPOINT + config.commentEndPoint;
+const userEndPoint = config.userEndPoint;
+const commentEndPoint = config.commentEndPoint;
 let serverUserIndex;
 
 export async function register(user) {
