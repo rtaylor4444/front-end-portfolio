@@ -1,0 +1,25 @@
+.section_blog {
+  margin: 4rem 0;
+
+  &__category_container {
+    text-align: left;
+    margin-bottom: 1rem;
+    //border-top: 2px solid $color-primary;
+  }
+
+  &__category_item {
+    position: relative;
+    width: 90%;
+    margin: 0 auto;
+    list-style-type: none;
+    padding-bottom: 0.5rem;
+  }
+
+  &__category_text {
+    margin-bottom: 1rem;
+  }
+
+  &__blog_container {
+    text-align: center;
+  }
+}
