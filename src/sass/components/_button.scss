@@ -45,6 +45,18 @@
     animation: moveInBottom 0.5s ease-out 0.75s;
     animation-fill-mode: backwards;
   }
+
+  &--red_small {
+    color: $color-red;
+    border: 3px solid $color-red;
+    padding: 0.5rem 1rem;
+    margin: auto;
+    &:focus,
+    &:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  }
 }
 
 .btn-text {

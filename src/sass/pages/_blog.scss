@@ -4,7 +4,6 @@
   &__category_container {
     text-align: left;
     margin-bottom: 1rem;
-    //border-top: 2px solid $color-primary;
   }
 
   &__category_item {
@@ -13,13 +12,58 @@
     margin: 0 auto;
     list-style-type: none;
     padding-bottom: 0.5rem;
+    &:hover {
+      cursor: pointer;
+    }
   }
 
   &__category_text {
-    margin-bottom: 1rem;
+    padding: 0.5rem 0.5rem;
   }
 
   &__blog_container {
     text-align: center;
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  &__blog_content {
+    border-bottom: 2px solid $color-primary;
+
+    &__h1 {
+      display: block;
+      font-size: 4rem;
+      margin-bottom: 0.5rem;
+      color: $color-primary;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    &__h2 {
+      font-size: 2.4rem;
+      margin-bottom: 0.5rem;
+    }
+
+    &__p {
+      text-align: left;
+      word-wrap: break-word;
+      padding: 0.5rem 0.5rem;
+    }
+
+    &__image {
+      width: 80%;
+      margin: 0 auto;
+    }
+
+    &__read_more {
+      display: block;
+      color: $color-primary;
+      text-align: left;
+      margin-bottom: 0.5rem;
+      &:hover {
+        cursor: pointer;
+      }
+    }
   }
 }

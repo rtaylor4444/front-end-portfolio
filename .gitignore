@@ -25,6 +25,9 @@
 /src/css/racing_core_project.png
 /src/css/racing_core_project_2.png
 /src/css/yaotl_coatl_racing_project.png
+/src/css/style.comp.css
+/src/css/style.concat.css
+/src/css/style.prefix.css
 
 # misc
 .DS_Store

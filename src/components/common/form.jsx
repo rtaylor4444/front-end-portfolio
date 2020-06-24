@@ -57,7 +57,7 @@ class Form extends Component {
     this.setState({ data, errors });
   };
 
-  renderInput(label, path, type = "text") {
+  renderInput(label, path, type = "text", onChange = this.handleChange) {
     const { data, errors } = this.state;
     return (
       <Input
@@ -66,12 +66,27 @@ class Form extends Component {
         value={data[path]}
         type={type}
         error={errors[path]}
-        onChange={this.handleChange}
+        onChange={onChange}
       />
     );
   }
 
-  renderSelect(label, path, options) {
+  renderInputFile(label, path, accept, onChange = this.handleChange) {
+    const { data, errors } = this.state;
+    return (
+      <Input
+        label={label}
+        name={path}
+        value={data[path]}
+        type="file"
+        accept={accept}
+        error={errors[path]}
+        onChange={onChange}
+      />
+    );
+  }
+
+  renderSelect(label, path, options, onChange = this.handleChange) {
     const { data, errors } = this.state;
     return (
       <Select
@@ -80,12 +95,12 @@ class Form extends Component {
         label={label}
         options={options}
         error={errors[path]}
-        onChange={this.handleChange}
+        onChange={onChange}
       />
     );
   }
 
-  renderTextArea(label, path) {
+  renderTextArea(label, path, onChange = this.handleChange) {
     const { data, errors } = this.state;
     return (
       <TextArea
@@ -93,7 +108,7 @@ class Form extends Component {
         value={data[path]}
         label={label}
         error={errors[path]}
-        onChange={this.handleChange}
+        onChange={onChange}
       />
     );
   }

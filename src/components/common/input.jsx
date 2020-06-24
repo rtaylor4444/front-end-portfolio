@@ -6,18 +6,9 @@ function getInvalidClass(error) {
 }
 
 const Input = (props) => {
-  const { value, onChange, name, label, type, error } = props;
+  const { value, onChange, name, label, type, accept, error } = props;
   return (
     <React.Fragment>
-      {
-        //We use ref to access document data that was typed in from the user
-        //This is mainly for react, in vanilla js we would have use
-        //document.getElementById("username").value
-        //
-        //value attribute can be used so that we are always using our state for the value
-        //
-        //name attribute is used to we can access the object dynamically via [] operator
-      }
       <label className="form__label" htmlFor={name}>
         {label}
       </label>
@@ -28,6 +19,7 @@ const Input = (props) => {
         onChange={onChange}
         id={name}
         type={type}
+        accept={accept}
         className={"form__input " + getInvalidClass(error)}
       />
       {error && <div className="form__label--invalid">{error}</div>}
