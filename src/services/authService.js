@@ -7,7 +7,10 @@ let navbarUpdateUser;
 let passwordRecIndex;
 let enteredEmail;
 
-//BUG - function ot be moved to its own module
+//Gets called incase user is already logged in
+http.setJwt(getJwt());
+
+//BUG - function to be moved to its own module
 export function goBackInSite(history) {
   //If user was previously on this site go to the prev page
   //otherwise go home
@@ -16,13 +19,10 @@ export function goBackInSite(history) {
 }
 
 export async function login(email, password, history) {
-  const { data: jwt } = await http.post(
-    process.env.REACT_APP_PORTFOLIO_ENDPOINT + config.loginEndPoint,
-    {
-      email,
-      password,
-    }
-  );
+  const { data: jwt } = await http.post(config.loginEndPoint, {
+    email,
+    password,
+  });
   loginWithJwt(jwt, history);
 }
 

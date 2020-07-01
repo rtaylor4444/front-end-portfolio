@@ -1,48 +1,36 @@
-//import http from "./httpService";
-//import config from "../config";
+import http from "./httpService";
+import config from "../config";
 
-//const blogEndPoint = config.blogEndPoint;
-//BUG - To call our backend
 export const blogService = (function () {
   const blogs = new Map();
-  //BUG - this should be set from somewhere and not hardcoded
-  const maxRecentIds = 3;
+  const maxRecentIds = config.maxRecentBlogsDisplayed;
   //The most recent id will be first in this list
   const recentBlogIds = [];
   //Tree like object structure containing categories and id key pairs
-  //{subCat: [], id}
-  //Portfolio Site: { Step1: { id },
-  //                  Step2: { id } }
   const categoryList = {};
+
   //Categories
   const traverseCategories = (categoryPath, func) => {
     let curCategory = categoryList;
-    let returnValue;
     categoryPath.forEach((item, i) => {
-      //Do nothing once we get a return value
-      if (returnValue) return;
       //If a sub category doesnt exist we must create it
       if (!curCategory[item]) curCategory[item] = {};
       //Traverse through our object
       let parentCategory = curCategory;
       curCategory = curCategory[item];
 
-      returnValue = func(curCategory, parentCategory, item, i);
+      func(curCategory, parentCategory, item, i);
     });
-    return returnValue;
   };
   const getCategories = () => {
     return categoryList;
   };
   const addCategory = (categoryString, id) => {
     const categoryPath = categoryString.split("/");
-    return traverseCategories(categoryPath, (cur, parent, key, i) => {
+    traverseCategories(categoryPath, (cur, parent, key, i) => {
       //Check for final element
       if (i === categoryPath.length - 1) {
-        if (cur.id || cur.id === 0)
-          return "Catergory already exists enter a different one.";
         cur.id = id;
-        return null;
       }
     });
   };
@@ -64,37 +52,79 @@ export const blogService = (function () {
     recentBlogIds.unshift(id);
     if (recentBlogIds.length > maxRecentIds) recentBlogIds.pop();
   };
-  const getRecentBlogs = () => {
-    return recentBlogIds.map((id) => getBlog(id));
+  const setRecentBlogIDs = (id) => {
+    if (recentBlogIds.length < maxRecentIds) recentBlogIds.push(id);
+  };
+  const loadAllRecentBlogs = async () => {
+    //If we have no recent blogs lets call our server
+    if (recentBlogIds.length === 0) {
+      try {
+        const res = await http.get(config.blogEndPoint);
+        res.data.forEach((item) => {
+          setRecentBlogIDs(item._id);
+          addCategory(item.category, item._id);
+          blogs.set(item._id, item);
+        });
+      } catch (error) {
+        return error;
+      }
+    }
+  };
+  const getRecentBlogs = async () => {
+    const errors = await loadAllRecentBlogs();
+    if (errors) return { errors, recentBlogs: [] };
+    const recentBlogs = recentBlogIds.map((id) => blogs.get(id));
+    return { recentBlogs };
   };
 
   //Blogs
-  const addBlog = (content, category) => {
-    const id = blogs.size;
-    const error = addCategory(category, id);
-    if (error) return error;
-    addRecentBlogId(id);
-    blogs.set(id, { content, id, category });
-  };
-  const getBlog = (id) => {
-    return blogs.get(id);
-  };
-  const updateBlog = (id, content, category) => {
-    const prevBlog = getBlog(id);
-    //Check if categories are different, if so we must fix our category structure
-    if (prevBlog.category !== category) {
-      removeCategory(prevBlog.category);
+  const addBlog = async (content, category) => {
+    try {
+      //Load all of our blogs if they werent loaded already
+      await loadAllRecentBlogs();
+      //Add our new blog to the server
+      const res = await http.post(config.blogEndPoint, {
+        content,
+        category,
+      });
+      const id = res.data._id;
+      addRecentBlogId(id);
       addCategory(category, id);
+      blogs.set(id, res.data);
+    } catch (error) {
+      console.log(error);
+      return error;
     }
-    blogs.set(id, { content, id, category });
   };
-  const deleteBlog = (id, category) => {
-    removeCategory(category, id);
-    blogs.delete(id);
+  const getBlog = async (id) => {
+    //I have to get all of the blogs at the start so categories can be loaded
+    const error = await loadAllRecentBlogs();
+    if (error) return null;
+    //Once loaded all blog successfully there is no need to
+    //call the server to get an individual blog
+    let blog = blogs.get(id);
+    return blog;
+  };
+  const updateBlog = async (id, content, category) => {
+    const prevBlog = await getBlog(id);
+    try {
+      const res = await http.put(`${config.blogEndPoint}/${id}`, {
+        content,
+        category,
+      });
+      const blog = res.data;
+      //Check if categories are different, if so we must fix our category structure
+      if (prevBlog.category !== blog.category) {
+        removeCategory(prevBlog.category);
+        addCategory(category, id);
+      }
+      blogs.set(blog._id, blog);
+    } catch (error) {
+      return error;
+    }
   };
   return {
     addBlog,
-    deleteBlog,
     getBlog,
     getRecentBlogs,
     getCategories,

@@ -12,7 +12,7 @@ class PasswordResetForm extends Form {
   };
 
   schema = {
-    code: Joi.string().required().label("Confirmation Code").min(24).max(24),
+    code: Joi.string().required().label("Confirmation Code").max(10),
     password: Joi.string().required().label("Enter Password").min(5),
     passwordConfirm: Joi.string().required().label("Re-enter Password").min(5),
   };

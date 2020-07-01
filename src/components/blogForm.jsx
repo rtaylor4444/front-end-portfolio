@@ -3,8 +3,10 @@ import { Redirect } from "react-router-dom";
 import Joi from "joi-browser";
 import Form from "./common/form";
 import CategoryList from "./common/categoryList";
+import BlogItem from "./common/blogItem";
 import * as authService from "../services/authService";
 import { blogService } from "../services/blogService";
+import errorHandler from "../services/errorHandler";
 
 //FormContent type
 //0 - misc (title, category... etc)
@@ -17,62 +19,44 @@ class BlogForm extends Form {
     errors: {},
     formContent: [],
     blogID: "new",
+    blogContent: { content: [{ contentType: 0, data: "", _id: 0 }] },
   };
   schema = {
     title: Joi.string().required().label("Blog Title").min(3),
     category: Joi.string().required().label("Category").min(3),
   };
+
   //Keep track of how many content of each type was created
   numContentTypes = [1, 0, 0, 0];
   async componentDidMount() {
     const id = this.props.match.params.id;
     //Do not do anything when creating a new blog
     if (id === "new") return;
-    const blog = blogService.getBlog(parseInt(id, 10));
-    if (!blog) return this.props.history.push("/not-found");
-    //Convert this into formContent after our state is set
-    this.setState(
-      {
-        blogID: parseInt(id, 10),
-        data: { title: blog.content[0].data, category: blog.category },
-      },
-      () => {
-        blog.content.forEach((item) =>
-          this.createFormContent(item.type, item.data)
-        );
-      }
-    );
-  }
-  createBlogContent(type, id) {
-    const { data } = this.state;
-    switch (type) {
-      //Heading
-      case 1:
-        return data[`heading${id}`];
-      //Paragraph
-      case 2:
-        return data[`paragraph${id}`];
-      //Image
-      case 3:
-        return [data[`image${id}`], data[`image${id}_url`]];
-      //Invalid type
-      default:
-        return;
-    }
-  }
-  createBlogContentArray() {
-    const { formContent, data } = this.state;
-    const blogContent = [];
-    blogContent.push({ type: 0, data: data.title });
-    formContent.forEach((item) => {
-      const blogData = this.createBlogContent(item.type, item.id);
-      const blogItem = { type: item.type, data: blogData };
-      blogContent.push(blogItem);
+
+    const blogContent = await blogService.getBlog(id);
+    if (!blogContent) return this.props.history.push("/not-found");
+
+    //Convert blogContent into formContent
+    this.state.data = {
+      title: blogContent.content[0].data,
+      category: blogContent.category,
+    };
+    blogContent.content.forEach((item) => {
+      //Data must be set properly for images
+      if (item.contentType === 3)
+        this.state[`imageData${this.numContentTypes[3]}`] = item.data;
+      this.createFormContent(item.contentType, item.data, true);
     });
-    return blogContent;
+
+    this.setState({
+      blogID: blogContent._id,
+      data: this.state.data,
+      formContent: this.state.formContent,
+      blogContent,
+    });
   }
-  createFormContent(type, value = "") {
-    const { formContent, data } = this.state;
+  createFormContent(type, value = "", isFromServer = false) {
+    const { formContent, blogContent, data } = this.state;
     //Add a new variable to our schema and our state data
     const numType = this.numContentTypes[type];
     switch (type) {
@@ -92,14 +76,13 @@ class BlogForm extends Form {
           .label(`Paragraph ${numType}`)
           .min(3);
         break;
-      //Image BUG - must verify image filetype
+
       case 3:
-        console.log(value);
+        //Set empty since file input elements cannot have a predefined value
         data[`image${numType}`] = "";
-        this.schema[`image${numType}`] = Joi.string().label(`Image ${numType}`);
-        //Add future url so joi does not throw a fit
-        data[`image${numType}_url`] = value[1];
-        this.schema[`image${numType}_url`] = Joi.string();
+        //We will verify image filetype outside of joi
+        //Due to lacking a url from our server
+        this.schema[`image${numType}`] = Joi.any();
         break;
       //Invalid type
       default:
@@ -107,42 +90,93 @@ class BlogForm extends Form {
     }
     //Add this type to our list
     formContent.push({ type, id: numType });
+    //Only add blog content if we arent loading from our server
+    if (!isFromServer) {
+      blogContent.content.push({
+        contentType: type,
+        data: value,
+        _id: numType,
+      });
+    }
     //Keep track of how many of each content type we have
     this.numContentTypes[type] += 1;
-    //Rerender our form
-    this.setState({ formContent });
   }
 
   //Event Handlers
-  handleFileUpload(e, id) {
-    const { data } = this.state;
+  handleFileUpload(e, id, index) {
+    const { data, blogContent } = this.state;
     e.preventDefault();
     if (!e.currentTarget) return;
+
+    //BUG - verify file extension
+    //if fail no image is loaded
+    //Set our file information
     data[`image${id}`] = e.currentTarget.value;
-    data[`image${id}_url`] = URL.createObjectURL(e.target.files[0]);
+
+    //Read file data
+    const fileReader = new FileReader();
+    fileReader.readAsBinaryString(e.target.files[0]);
+
+    //Loaded successfully
+    fileReader.onload = () => {
+      //Convery binary string to base64 ascii string
+      blogContent.content[index].data = btoa(fileReader.result);
+      this.setState({ blogContent });
+    };
+
+    //Error
+    fileReader.onerror = () => {
+      console.log(fileReader.error);
+      const errors = errorHandler.handleBlogError(
+        fileReader.error,
+        this.state.errors
+      );
+      this.setState({ errors });
+    };
     this.handleChange(e);
   }
-  doSubmit(e) {
-    const { data, blogID } = this.state;
+  async doSubmit(e) {
+    const { data, blogID, blogContent } = this.state;
+    let error;
     e.preventDefault();
-    const blogContent = this.createBlogContentArray();
+    let redirectURL;
     if (blogID === "new") {
-      const error = blogService.addBlog(blogContent, data.category);
-      if (error) return this.setState({ errors: { general: error } });
+      error = await blogService.addBlog(blogContent.content, data.category);
       //Go back to the home blog page
-      this.props.history.push("/blog");
+      redirectURL = "/blog";
     } else {
-      blogService.updateBlog(blogID, blogContent, data.category);
+      error = await blogService.updateBlog(
+        blogID,
+        blogContent.content,
+        data.category
+      );
       //Go back to that specific blog page
-      this.props.history.push(`/blog/${blogID}`);
+      redirectURL = `/blog/${blogID}`;
     }
+    if (error) {
+      const errors = errorHandler.handleBlogError(error, this.state.errors);
+      return this.setState({ errors });
+    }
+    this.props.history.push(redirectURL);
+  }
+  onValueChange(e, index) {
+    const { blogContent } = this.state;
+    e.preventDefault();
+    const { value } = e.currentTarget;
+    //Edit our blog content as well
+    blogContent.content[index].data = value;
+    this.handleChange(e);
+    this.setState({ blogContent });
   }
   onAddFormContent(e, type) {
+    const { formContent } = this.state;
     e.preventDefault();
     this.createFormContent(type);
+    //Rerender our form
+    this.setState({ formContent });
   }
   onRemoveFormContent(e, type, id) {
-    const { formContent, data } = this.state;
+    const { formContent, blogContent, data } = this.state;
     e.preventDefault();
     //Get our variable name
     let varName;
@@ -158,74 +192,50 @@ class BlogForm extends Form {
       //Image
       case 3:
         varName = `image${id}`;
-        delete this.schema[`image${id}_url`];
         break;
       //Invalid type
       default:
         return;
     }
     //Remove from the form content
-    const newContent = formContent.filter((item) => {
-      return !(item.id === id && item.type === type);
+    let indexToDelete;
+    const newContent = formContent.filter((item, i) => {
+      if (item.id === id && item.type === type) {
+        indexToDelete = i + 1;
+        return false;
+      }
+      return true;
+    });
+    //Remove from the blog content
+    const newBlogContent = blogContent.content.filter((item, i) => {
+      return i !== indexToDelete;
     });
     //Remove stored data
     delete this.schema[varName];
     delete data[varName];
     //Rerender our form
-    this.setState({ data, formContent: newContent });
+    this.setState({
+      data,
+      formContent: newContent,
+      blogContent: { content: newBlogContent },
+    });
   }
 
-  renderBlogElement(content) {
-    const { type, id } = content;
-    const { data } = this.state;
-    switch (type) {
-      //Heading
-      case 1:
-        return (
-          <h2 key={`b${type}${id}`} className="section_blog__blog_content__h2">
-            {data[`heading${id}`]}
-          </h2>
-        );
-      //Paragraph
-      case 2:
-        return (
-          <p key={`b${type}${id}`} className="section_blog__blog_content__p">
-            {data[`paragraph${id}`]}
-          </p>
-        );
-      //Image
-      case 3:
-        return (
-          <img
-            key={`b${type}${id}`}
-            src={data[`image${id}_url`]}
-            alt="not found"
-            className="section_blog__blog_content__image"
-          />
-        );
-      default:
-        return null;
-    }
-  }
-  renderBlogPreview() {
-    const { data, formContent } = this.state;
-    return (
-      <div className="section_blog__blog_container">
-        <h1 className="section_blog__blog_content__h1">{data.title}</h1>
-        {formContent.map((item) => this.renderBlogElement(item))}
-      </div>
-    );
-  }
-  renderFormContent(type, id) {
+  //Rendering
+  renderFormContent(type, id, index) {
     let content;
     switch (type) {
       //heading
       case 1:
-        content = this.renderInput("Heading", `heading${id}`);
+        content = this.renderInput("Heading", `heading${id}`, "text", (e) =>
+          this.onValueChange(e, index)
+        );
         break;
       //paragraph
       case 2:
-        content = this.renderTextArea("Paragraph", `paragraph${id}`);
+        content = this.renderTextArea("Paragraph", `paragraph${id}`, (e) =>
+          this.onValueChange(e, index)
+        );
         break;
       //image
       case 3:
@@ -234,7 +244,7 @@ class BlogForm extends Form {
           `image${id}`,
           "image/png, image/jpeg",
           (e) => {
-            this.handleFileUpload(e, id);
+            this.handleFileUpload(e, id, index);
           }
         );
         break;
@@ -259,12 +269,16 @@ class BlogForm extends Form {
     const user = authService.getCurrentUser();
     if (!user || !user.isAdmin) return <Redirect to="/blog" />;
 
-    const { formContent } = this.state;
+    const { formContent, blogContent } = this.state;
     return (
       <React.Fragment>
         <h1 className="u-center-text u-margin-bottom-med">Create Blog Post</h1>
         <div className="blog-row">
-          <div className="blog-col-3-of-4">{this.renderBlogPreview()}</div>
+          <div className="blog-col-3-of-4">
+            <div className="section_blog__blog_container">
+              <BlogItem blog={blogContent.content} />
+            </div>
+          </div>
           <div className="blog-col-1-of-4">
             <CategoryList history={this.props.history} />
           </div>
@@ -273,9 +287,13 @@ class BlogForm extends Form {
           <div className="form__group">
             {this.renderFormError()}
             {this.renderInput("Category", "category")}
-            {this.renderInput("Blog Title", "title")}
+            {this.renderInput("Blog Title", "title", "text", (e) =>
+              this.onValueChange(e, 0)
+            )}
             {formContent.map((item, i) => (
-              <div key={i}>{this.renderFormContent(item.type, item.id)}</div>
+              <div key={i}>
+                {this.renderFormContent(item.type, item.id, i + 1)}
+              </div>
             ))}
             <button
               className="btn"
@@ -304,98 +322,3 @@ class BlogForm extends Form {
 }
 
 export default BlogForm;
-
-/*
-import axios from 'axios'; 
-
-import React,{Component} from 'react'; 
-import { blogService } from './../services/blogService';
-
-class App extends Component { 
-
-	state = { 
-
-	// Initially, no file is selected 
-	selectedFile: null
-	}; 
-	
-	// On file select (from the pop up) 
-	onFileChange = event => { 
-	
-	// Update the state 
-	this.setState({ selectedFile: event.target.files[0] }); 
-	
-	}; 
-	
-	// On file upload (click the upload button) 
-	onFileUpload = () => { 
-	
-	// Create an object of formData 
-	const formData = new FormData(); 
-	
-	// Update the formData object 
-	formData.append( 
-		"myFile", 
-		this.state.selectedFile, 
-		this.state.selectedFile.name 
-	); 
-	
-	// Details of the uploaded file 
-	console.log(this.state.selectedFile); 
-	
-	// Request made to the backend api 
-	// Send formData object 
-	axios.post("api/uploadfile", formData); 
-	}; 
-	
-	// File content to be displayed after 
-	// file upload is complete 
-	fileData = () => { 
-	
-	if (this.state.selectedFile) { 
-		
-		return ( 
-		<div> 
-			<h2>File Details:</h2> 
-			<p>File Name: {this.state.selectedFile.name}</p> 
-			<p>File Type: {this.state.selectedFile.type}</p> 
-			<p> 
-			Last Modified:{" "} 
-			{this.state.selectedFile.lastModifiedDate.toDateString()} 
-			</p> 
-		</div> 
-		); 
-	} else { 
-		return ( 
-		<div> 
-			<br /> 
-			<h4>Choose before Pressing the Upload button</h4> 
-		</div> 
-		); 
-	} 
-	}; 
-	
-	render() { 
-	
-	return ( 
-		<div> 
-			<h1> 
-			GeeksforGeeks 
-			</h1> 
-			<h3> 
-			File Upload using React! 
-			</h3> 
-			<div> 
-				<input type="file" onChange={this.onFileChange} /> 
-				<button onClick={this.onFileUpload}> 
-				Upload! 
-				</button> 
-			</div> 
-		{this.fileData()} 
-		</div> 
-	); 
-	} 
-} 
-
-export default App; 
-*/

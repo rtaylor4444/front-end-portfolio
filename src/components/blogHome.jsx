@@ -4,27 +4,34 @@ import { getCurrentUser } from "../services/authService";
 import { blogService } from "../services/blogService";
 import BlogItem from "./common/blogItem";
 import CategoryList from "./common/categoryList";
+import errorHandler from "../services/errorHandler";
 
 class BlogHome extends Component {
   state = {
     recentBlogs: [],
   };
   async componentDidMount() {
-    const recentBlogs = blogService.getRecentBlogs();
-    this.setState({ recentBlogs });
+    const result = await blogService.getRecentBlogs();
+    const { recentBlogs, errors } = result;
+    let error;
+    if (errors) error = errorHandler.handleBlogError(errors, {});
+    this.setState({
+      recentBlogs,
+      error: error,
+    });
   }
   renderBlogRecentPost(blog) {
     return (
-      <div key={blog.id} className="section_blog__blog_content">
+      <div key={blog._id} className="section_blog__blog_content">
         <BlogItem
           blog={blog.content}
           limit={4}
           isLink={true}
-          blogID={blog.id}
+          blogID={blog._id}
         />
         <Link
           className="section_blog__blog_content__read_more"
-          to={`/blog/${blog.id}`}
+          to={`/blog/${blog._id}`}
         >
           Read More...
         </Link>
@@ -44,8 +51,16 @@ class BlogHome extends Component {
       </div>
     );
   }
+  renderError() {
+    return (
+      <p className="form__label--invalid u-center-text">
+        {this.state.error.general}
+      </p>
+    );
+  }
   render() {
     const user = getCurrentUser();
+    const { error } = this.state;
     return (
       <section className="section_blog">
         <div className="blog-row">
@@ -57,7 +72,7 @@ class BlogHome extends Component {
                 </Link>
               </div>
             )}
-            {this.renderRecentBlogs()}
+            {error ? this.renderError() : this.renderRecentBlogs()}
           </div>
           <div className="blog-col-1-of-4">
             <CategoryList history={this.props.history} />

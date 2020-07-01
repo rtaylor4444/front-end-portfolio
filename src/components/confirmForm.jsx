@@ -10,7 +10,7 @@ class ConfirmForm extends Form {
   state = { data: { code: "" }, errors: {} };
 
   schema = {
-    code: Joi.string().required().label("Confirmation Code").min(24).max(24),
+    code: Joi.string().required().label("Confirmation Code").max(10),
   };
 
   doResend = async () => {

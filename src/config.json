@@ -2,5 +2,8 @@
   "userEndPoint": "api/users",
   "loginEndPoint": "api/login",
   "commentEndPoint": "api/comments/",
-  "tokenKey": "token"
+  "blogEndPoint": "api/blog",
+  "blogImageEndPoint": "api/blogImages",
+  "tokenKey": "token",
+  "maxRecentBlogsDisplayed": 3
 }
