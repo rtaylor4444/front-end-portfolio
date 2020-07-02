@@ -27,7 +27,7 @@ class CommentForm extends Form {
   renderFormContent() {
     return (
       <React.Fragment>
-        <h1 className="u-center-text">Make a comment</h1>
+        <h1 className="u-center-text u-margin-top-small">Make a comment</h1>
         {this.renderFormError()}
         {this.renderTextArea("Message", "message")}
         {this.renderButton("Submit")}
