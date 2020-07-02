@@ -25,7 +25,7 @@ class BlogHome extends Component {
       <div key={blog._id} className="section_blog__blog_content">
         <BlogItem
           blog={blog.content}
-          limit={4}
+          limit={5}
           isLink={true}
           blogID={blog._id}
         />
