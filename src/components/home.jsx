@@ -56,7 +56,7 @@ const Home = (props) => {
           </div>
         </div>
         <div className="u-center-text">
-          <a href="/rob-taylor-resume-web.docx" download className="btn">
+          <a href="/r_taylor_resume.docx" download className="btn">
             Download Resume
           </a>
         </div>
